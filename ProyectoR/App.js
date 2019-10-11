@@ -37,7 +37,7 @@ const App: () => ReactNode = () => {
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>HOLALAAAAALALALALLALALALALAL
-              MUNDO,PROYECTO RRRRRR
+              MUNDO,Haciendo pruebas
               </Text>
               
             </View>
