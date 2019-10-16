@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet,View, Image, TouchableOpacity, Text, SafeAreaView, ScrollView,Dimensions } from 'react-native';
 import {createAppContainer} from 'react-navigation'; 
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator,DrawerNavigatorItems } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -16,6 +16,7 @@ class NavigationDrawerStructure extends Component {  // Para poder mostar el men
   toggleDrawer = () => {
     this.props.navigationProps.toggleDrawer();
  };
+
   
   render() {
     return (
@@ -27,6 +28,109 @@ class NavigationDrawerStructure extends Component {  // Para poder mostar el men
     );
   }
 }
+
+var a = 0;
+var b = 1;
+var c = 0;
+var d = 1;
+var e = 0;
+
+
+const elementA = (props) =>{
+  if (a==0){
+    return(
+<TouchableOpacity onPress={() =>{
+  console.warn ("holasas");
+  props.navigation.navigate('varSingUp');
+
+  }}>
+    <Text > A</Text>
+</TouchableOpacity>
+
+    )
+  } 
+}
+
+const elementB= () =>{
+  if (b==0){
+    return(
+<TouchableOpacity onPress={() =>{
+  console.warn ("holasas");
+  }}>
+    <Text > B</Text>
+</TouchableOpacity>
+
+    )
+  } 
+}
+const elementC = () =>{
+  if (c==0){
+    return(
+<TouchableOpacity onPress={() =>{
+  console.warn ("holasas");
+  }}>
+    <Text > C</Text>
+</TouchableOpacity>
+
+    )
+  } 
+}
+const elementD = () =>{
+  if (d==0){
+    return(
+<TouchableOpacity onPress={() =>{
+  console.warn ("holasas");
+  }}>
+    <Text > D</Text>
+</TouchableOpacity>
+
+    )
+  } 
+}
+const elementE= () =>{
+  if (e==0){
+    return(
+<TouchableOpacity onPress={() =>{
+  console.warn ("holasas");
+  }}>
+    <Text > E</Text>
+</TouchableOpacity>
+
+    )
+  } 
+}
+
+
+const CustomDrawerContentComponent = props => (
+  <ScrollView>
+    <SafeAreaView
+      style={styles.container}
+      forceInset={{ top: 'always', horizontal: 'never' }}
+    >
+      <View  style ={ { height : 150  }}>
+  <Image
+  source= {require ('./src/Images/Logo.png')}
+  />
+    </View>      
+      <DrawerNavigatorItems {...props} />
+      <View >
+                    { elementA(props)}
+                    { elementB()}
+                    { elementC()}
+                    { elementD()}
+                    { elementE()}
+
+                </View>
+
+    </SafeAreaView>
+  </ScrollView>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 const StackLogIn= createStackNavigator({
   varLogIn: {
@@ -96,6 +200,11 @@ const DrawerNavigator = createDrawerNavigator({ // aqui van las opciones del men
 },
 
 //aqui van mas opciones para el menu deslizable
+
+},
+{
+
+contentComponent : CustomDrawerContentComponent
 
 });
 
