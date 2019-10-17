@@ -1,91 +1,109 @@
-/***
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, { Component } from 'react';
+import { View, Image, TouchableOpacity, Text } from 'react-native';
+import {createAppContainer} from 'react-navigation'; 
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createStackNavigator } from 'react-navigation-stack';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-const App: () => ReactNode = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>HOLALAAAAALALALALLALALALALAL
-              MUNDO,Haciendo pruebas
-              </Text>
-              
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+import login from './src/pages/login';
+import singup from './src/pages/singup';   // imports para hacer la navegacion entre pantallas.
+import map from './src/pages/map';
+import form from './src/components/form';
+
+class NavigationDrawerStructure extends Component {  // Para poder mostar el menu deslizable
+   
+  toggleDrawer = () => {
+    this.props.navigationProps.toggleDrawer();
+ };
+  
+  render() {
+    return (
+      <View >
+        <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
+        <Icon name="bars" color='black' size={30} ></Icon> 
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+const StackLogIn= createStackNavigator({
+  varLogIn: {
+    screen: login,
+  },  varForm : {
+    screen: form
+  }
+},
+  {initialRouteName:'varLogIn'}
+);
+
+const StackSingUp= createStackNavigator({
+  varSingUp: {
+    screen: singup
+    }
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+
+  {initialRouteName:'varSingUp'}
+);
+
+
+
+
+const StackMap= createStackNavigator({
+  varMap: {
+    screen: map,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        // backgroundColor: '#rgb(190, 152, 221);',
+        height: 40
+      },
+      headerTitle: (
+      <View > 
+        <Text>Proyecto R</Text>
+      </View>
+      ),
+      }),
+    }
   },
-  body: {
-    backgroundColor: Colors.white,
+  {initialRouteName:'varMap'}
+);
+
+const DrawerNavigator = createDrawerNavigator({ // aqui van las opciones del menu deslizable 
+ 
+  LogIn: {
+    screen: StackLogIn,
+    navigationOptions: {
+    drawerLabel: 'Log In',
+    // drawerIcon: <Icon name="home" size={20} color="#6B3DA1" />,
+    activeTintColor: '#6B3DA1'
+    }
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+ 
+  SingUp: {
+    screen: StackSingUp,
+    navigationOptions: {
+    drawerLabel: 'Sing up',
+    // drawerIcon: <Icon name="home" size={20} color="#6B3DA1" />,
+    // activeTintColor: '#6B3DA1'
+    }
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  
+
+  Map: {
+   screen: StackMap,
+   navigationOptions: {
+   drawerLabel: 'Mapa',
+   // drawerIcon: <Icon name="home" size={20} color="#6B3DA1" />,
+   // activeTintColor: '#6B3DA1'
+   }
+},
+
+//aqui van mas opciones para el menu deslizable
+
 });
 
-export default App;
+export default createAppContainer(DrawerNavigator);
