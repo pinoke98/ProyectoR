@@ -7,7 +7,7 @@ const path = require('path')
 var mysql= require ('mysql');
 
 // Settings 
-app.set('port', process.env.PORT || 4646 );
+app.set('port', process.env.PORT || 3307 );
 //app.engine()
 
 //Middleware

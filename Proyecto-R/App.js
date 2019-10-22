@@ -139,26 +139,13 @@ const StackLogIn= createStackNavigator({
   varLogIn: {
     screen: login,
   }
-},{
-  varOlvCont: {
-    screen: olvCont,
-    }
-  },{
-    varGetCode: {
-      screen: getCode,
-      }
-    },
-    {
-      varChangePass: {
-        screen: changePass,
-        }
-      },
+},
   {initialRouteName:'varLogIn'}
 );
 
 const StackSingUp= createStackNavigator({
   varSingUp: {
-    screen: singup,
+    screen: singup
     }
   },
 
@@ -167,21 +154,29 @@ const StackSingUp= createStackNavigator({
 
 const StackOlvPass= createStackNavigator({
   varOlvCont: {
-    screen: olvCont,
-    }
-  },{
+    screen: olvCont
+    
+  },
     varGetCode: {
-      screen: getCode,
+      screen: getCode
       }
-    },
-    {
+    ,
+    
       varChangePass: {
-        screen: changePass,
-        }
-      }
- 
+        screen: changePass
+        },
+      },
+  
+
+  {initialRouteName:'varOlvCont'}
 );
 
+
+class Hidden extends React.Component {
+  render(){
+    return null;
+  }
+}
 
 
 
@@ -235,8 +230,8 @@ const DrawerNavigator = createDrawerNavigator({ // aqui van las opciones del men
 OlvCont: {
   screen: StackOlvPass,
   navigationOptions: {
-  drawerLabel: 'Mapa',
-  drawerIcon: <Icon name="home" size={20} color="black" />,
+  drawerLabel: <Hidden/>,
+  header: null,
   }
 },
 

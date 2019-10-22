@@ -7,7 +7,19 @@ import { TextInput, Text, View, TouchableOpacity, ActivityIndicator, Alert ,Scro
 export default class Singup extends Component{
     constructor(props){
         super(props);
+        global.usuario = '';
+
         this.state ={
+            usuario:'',
+            contraseña:'',
+            nombre:'',
+            apellido:'',
+            email:'',
+            contraseña1:'',
+            contraseña2:'',
+            genero:'',
+            ubicacion:'',
+            enlace:'192.168.56.1',
             pickerSelection:"Default"
         }
     }
@@ -32,6 +44,7 @@ export default class Singup extends Component{
                                     returnKeyType="next"
                                     keyboardType="default"
                                     autoCompleteType="email"
+                                    onChangeText={(text)  => this.setState({nombre:text})}
                                     />
                                     <TextInput
                                     key="lastName"
@@ -40,7 +53,8 @@ export default class Singup extends Component{
                                     placeholderTextColor="rgba(87, 96, 111,1.0)"
                                     returnKeyType="next"
                                     keyboardType="default"
-                                    autoCompleteType="email"
+                                    autoCompleteType="name"
+                                    onChangeText={(text)  => this.setState({apellido:text})}
                                     />
                                     <TextInput
                                     key="2"
@@ -50,6 +64,7 @@ export default class Singup extends Component{
                                     returnKeyType="next"
                                     keyboardType="default"
                                     autoCompleteType="email"
+                                    onChangeText={(text)  => this.setState({usuario:text})}
                                     />
                                     
                                     <TextInput
@@ -60,6 +75,7 @@ export default class Singup extends Component{
                                     returnKeyType="next"
                                     keyboardType="email-address"
                                     autoCompleteType="email"
+                                    onChangeText={(text)  => this.setState({email:text})}
                                     />
                                     <TextInput
                                     key="4"
@@ -70,6 +86,7 @@ export default class Singup extends Component{
                                     secureTextEntry
                                     keyboardType="default"
                                     autoCompleteType="email"
+                                    onChangeText={(text)  => this.setState({contraseña1:text})}
                                     />
                                     <TextInput
                                     key="5"
@@ -80,6 +97,7 @@ export default class Singup extends Component{
                                     secureTextEntry
                                     keyboardType="default"
                                     autoCompleteType="email"
+                                    onChangeText={(text)  => this.setState({contraseña2:text})}
                                     />
                                     <Picker
                                     mode="dropdown"
@@ -87,6 +105,9 @@ export default class Singup extends Component{
                                     style={styles.input}
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({pickerSelection: itemValue})
+                                    }>
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({genero: itemValue})
                                     }>
                                     <Picker.Item label="Hombre" value="H" />
                                     <Picker.Item label="Mujer" value="M" />
@@ -98,7 +119,11 @@ export default class Singup extends Component{
                                     style={styles.input}
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({pickerSelection: itemValue})
+                                    }
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({ubicacion: itemValue})
                                     }>
+                                    >
                                     <Picker.Item label="Colombia" Value="Col"/>
                                     <Picker.Item label="Portugal" Value="Por"/>
                                     <Picker.Item label="Puerto Rico" Value="PR"/>

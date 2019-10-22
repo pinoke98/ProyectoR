@@ -3,6 +3,56 @@ import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, A
 
 export default class Login extends Component{
  
+    constructor(props){
+             super(props); 
+           global.usuario = ''; // en esta variable ira el usuario actual en una sesion
+             global.usuarioadm = ''; // en esta variable ira el usuario actual en una sesion
+             this.state ={ 
+               usuario:'',
+               contraseña:'',
+               enlace:'192.168.56.1',
+              estadoingresar:'' // para mostrar mensaje de error 
+             }
+            }
+
+             verificar (){ 
+   fetch(`http://${this.state.enlace}:/obtenerusuario/${this.state.usuario}`)  
+     .then((response) => response.json())
+     .then((responseJson) => {
+       this.setState({
+         isLoading: false,
+         dataSource: responseJson
+       });
+       // aqui ocurre la verificación 
+       if (this.state.dataSource.length != 0 ){ // quiere decir que almenos encontro un registro
+       if ( this.state.usuario==this.state.dataSource[0].Usuario && this.state.contraseña==this.state.dataSource[0].Contra){
+         // si los datos son correctos 
+  
+   
+   global.usuario=this.state.usuario;
+   global.usuarioadm=this.state.dataSource[0].UsuarioADM;
+   this.setState({contraseña:''});
+   this.setState({usuario:''});
+   this.setState({estadoingresar:''});
+   this.props.navigation.navigate('varMap');// navegacion al home de la app
+
+       } else {
+           console.warn('malo');
+         this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+       }
+     } else {
+        console.warn('malo');
+       this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+     }
+     }
+  
+  
+     )
+     .catch((error) =>{
+       console.error(error);
+    });
+             }
+
     render(){
         return(
             <View style={styles.container}>
@@ -23,11 +73,11 @@ export default class Login extends Component{
                 placeholder="Username or Email"
                 placeholderTextColor="rgba(87, 96, 111,1.0)"
                 returnKeyType="next"
-                onSubmitEditing={() => this.passwordInput.focus()}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles1.input}
+                onChangeText={(text) => this.setState({usuario:text})}
                 />
                 <TextInput 
                 placeholder="Password"
@@ -35,61 +85,22 @@ export default class Login extends Component{
                 secureTextEntry
                 returnKeyType="join"
                 style={styles1.input}
-                ref={(input)=>this.passwordInput = input}
+                onChangeText={(text) => this.setState({contraseña:text})}
+                
                 />
-
-
-
-
-
-
-
-<TouchableOpacity 
-                style={styles1.Button} 
-                onPress = {() => { 
-                    this.props.navigation.navigate('varOlvCont');
-                    
-                 } }
-                > 
-                    <Text style={styles1.ButtonText}>LOGIN</Text>
-                </TouchableOpacity>
-
-
                 <TouchableOpacity 
                 style={styles1.Button} 
                 onPress = {() => { 
-                    this.props.navigation.navigate('varGetCode');
                     
+                    console.warn (this.state.enlace);
+                    console.warn (this.state.usuario);
+                    this.verificar();
                  } }
                 > 
                     <Text style={styles1.ButtonText}>LOGIN</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                style={styles1.Button} 
-                onPress = {() => { 
-                    this.props.navigation.navigate('varChangePass');
-                    
-                 } }
-                > 
-                    <Text style={styles1.ButtonText}>LOGIN</Text>
-                </TouchableOpacity>
-
-
-
-
-
-
-
-                <TouchableOpacity 
-                style={styles1.Button} 
-                onPress = {() => { 
-                    this.props.navigation.navigate('varMap');
-                    
-                 } }
-                > 
-                    <Text style={styles1.ButtonText}>LOGIN</Text>
-                </TouchableOpacity>
+                <Text> {this.state.estadoingresar}</Text>
 
 
                 <View style={styles1.signupButton}>
@@ -108,8 +119,12 @@ export default class Login extends Component{
                 </KeyboardAvoidingView>
             </View>
         );
-    }
+    
 }
+}
+
+
+
 
 const styles = StyleSheet.create({
     container:{
@@ -129,6 +144,8 @@ const styles = StyleSheet.create({
         paddingBottom:15
     }
 });
+
+
 
 const styles1=StyleSheet.create({
     container:{
@@ -169,10 +186,6 @@ const styles1=StyleSheet.create({
         fontWeight:"800"
     }
 });
-
-
-
-
 
 
 
