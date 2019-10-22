@@ -7,9 +7,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 
-import login from './src/pages/login';
-import singup from './src/pages/singup';   // imports para hacer la navegacion entre pantallas.
-import map from './src/pages/map';
+import login from './src/view/pages/login';
+import singup from './src/view/pages/singup';   // imports para hacer la navegacion entre pantallas.
+import map from './src/view/pages/map';
+import olvCont from './src/view/pages/olvCont';
+import changePass from './src/view/pages/changePass';
+import getCode from './src/view/pages/getCode';
 
 class NavigationDrawerStructure extends Component {  // Para poder mostar el menu deslizable
    
@@ -109,7 +112,7 @@ const CustomDrawerContentComponent = props => (
     >
       <View  style ={ { height : 150  }}>
   <Image
-  source= {require ('./src/Images/Logo.png')}
+ // source= {require ('./src/Images/Logo.png')}
   />
     </View>      
       <DrawerNavigatorItems {...props} />
@@ -136,17 +139,47 @@ const StackLogIn= createStackNavigator({
   varLogIn: {
     screen: login,
   }
-},
+},{
+  varOlvCont: {
+    screen: olvCont,
+    }
+  },{
+    varGetCode: {
+      screen: getCode,
+      }
+    },
+    {
+      varChangePass: {
+        screen: changePass,
+        }
+      },
   {initialRouteName:'varLogIn'}
 );
 
 const StackSingUp= createStackNavigator({
   varSingUp: {
-    screen: singup
+    screen: singup,
     }
   },
 
   {initialRouteName:'varSingUp'}
+);
+
+const StackOlvPass= createStackNavigator({
+  varOlvCont: {
+    screen: olvCont,
+    }
+  },{
+    varGetCode: {
+      screen: getCode,
+      }
+    },
+    {
+      varChangePass: {
+        screen: changePass,
+        }
+      }
+ 
 );
 
 
@@ -197,6 +230,14 @@ const DrawerNavigator = createDrawerNavigator({ // aqui van las opciones del men
    drawerLabel: 'Mapa',
    drawerIcon: <Icon name="home" size={20} color="black" />,
    }
+},
+
+OlvCont: {
+  screen: StackOlvPass,
+  navigationOptions: {
+  drawerLabel: 'Mapa',
+  drawerIcon: <Icon name="home" size={20} color="black" />,
+  }
 },
 
 //aqui van mas opciones para el menu deslizable
