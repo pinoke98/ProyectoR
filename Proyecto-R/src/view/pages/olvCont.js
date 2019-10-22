@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
+const nodemailer = require('nodemailer')
+
 export default class olvCont extends Component{
  
     render(){
@@ -31,6 +33,13 @@ export default class olvCont extends Component{
                         style={styles1.Button} 
                         onPress = {() => { 
                             this.props.navigation.navigate('varCod');  
+                            transport.sendMail(message, function(err, info) {
+                                if (err) {
+                                  console.log(err)
+                                } else {
+                                  console.log(info);
+                                }
+                            });
                         } }
                         > 
                             <Text style={styles1.ButtonText}>Send Code</Text>
@@ -100,3 +109,21 @@ const styles1=StyleSheet.create({
         fontWeight:"800"
     }
 });
+// Envio de email
+
+let transport = nodemailer.createTransport({
+    host: 'smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+       user: '79390913bdc00c',
+       pass: '424d286debffbc'
+    }
+});
+
+const message = {
+    from: 'no.reply@proyector.com', // Sender address
+    to: 'jorge_mario98@hotmail.com',         // List of recipients
+    subject: 'Design Your Model S | Tesla', // Subject line
+    text: 'Have the most fun you can in a car. Get your Tesla today!' // Plain text body
+};
+
