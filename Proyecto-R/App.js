@@ -19,7 +19,9 @@ class NavigationDrawerStructure extends Component {  // Para poder mostar el men
 
   
   render() {
+    
     return (
+
       <View >
         <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
         <Icon name="bars" color='black' size={30} ></Icon> 

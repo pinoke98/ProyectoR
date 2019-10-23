@@ -23,8 +23,18 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.company",
+      "googleMaps": {
+        "apiKey": "<android maps key>"
+    }
+    }
+    ,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.company",
+      "config": {
+          "googleMapsApiKey": "<ios maps api key>" }
     }
   }
 }
