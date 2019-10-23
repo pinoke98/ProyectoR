@@ -6,7 +6,7 @@ import { TextInput, Text, Dimensions,View,
  Animated} from "react-native";
 
 import MapView from 'react-native-maps';
-import {Marker} from 'react-native-maps';
+import {Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 export const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
@@ -15,9 +15,9 @@ export const getCurrentLocation = () => {
   };
   
   const Images = [
-    { image: require("../Images/mountains.jpg")},
-    { image: require('../Images/music.jpg') },
-    { image: require('../Images/wolf.jpg' )},
+    { image: require("../../Images/mountains.jpg")},
+    { image: require('../../Images/music.jpg') },
+    { image: require('../../Images/wolf.jpg' )},
   ]
 
   
@@ -29,6 +29,13 @@ const CARD_WIDTH = CARD_HEIGHT - 50;
 
 
 export default class Map extends Component{
+
+    constructor(props){
+        super(props);
+        state = {
+            marginBottom : 0
+        }
+    }
     
     state = {
         mapRegion: {
@@ -67,7 +74,12 @@ export default class Map extends Component{
               description: "Magestic",
               image: Images[2].image,
             },
-          ]
+          ],region: {
+            latitude: 6.252320066726161,
+            longitude: -75.5643403530121,
+            latitudeDelta: 0.003,
+            longitudeDelta: 0.003,
+          },
       };
 
       componentWillMount() {
@@ -76,6 +88,32 @@ export default class Map extends Component{
       }
       
     componentDidMount() {
+        this.animation.addListener(({ value }) => {
+            let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
+            if (index >= this.state.markers.length) {
+              index = this.state.markers.length - 1;
+            }
+            if (index <= 0) {
+              index = 0;
+            }
+      
+            clearTimeout(this.regionTimeout);
+            this.regionTimeout = setTimeout(() => {
+              if (this.index !== index) {
+                this.index = index;
+                const { coordinate } = this.state.markers[index];
+                this.map.animateToRegion(
+                  {
+                    ...coordinate,
+                    latitudeDelta: this.state.region.latitudeDelta,
+                    longitudeDelta: this.state.region.longitudeDelta,
+                  },
+                  350
+                );
+              }
+            }, 10);
+          });
+
         return getCurrentLocation().then(position => {
           if (position) {
             this.setState({
@@ -100,67 +138,68 @@ export default class Map extends Component{
     this.setState({ mapRegion });
   };
 
+  _onMapReady = () => this.setState({marginBottom: 0})
     render(){
+
+        const interpolations = this.state.markers.map((marker, index) => {
+            const inputRange = [
+              (index - 1) * CARD_WIDTH,
+              index * CARD_WIDTH,
+              ((index + 1) * CARD_WIDTH),
+            ];
+            const scale = this.animation.interpolate({
+              inputRange,
+              outputRange: [1, 2.5, 1],
+              extrapolate: "clamp",
+            });
+            const opacity = this.animation.interpolate({
+              inputRange,
+              outputRange: [0.35, 1, 0.35],
+              extrapolate: "clamp",
+            });
+            return { scale, opacity };
+          });
         return(
-    //         <View style={styles1.container}>
-    //     <MapView
-    //     showsUserLocation={true}
-    //       style={styles1.mapStyle}
-    //       region={this.state.mapRegion}
-    //       onRegionChange={this._handleMapRegionChange}
-    //     >
-
-
-    //         <Marker
-    //           coordinate={this.state.mapRegion}
-    //           title={"HOLA"}
-    //           description={"descripcion"}
-    //         />
-
-    //          <Marker
-    //           coordinate={{
-    //             latitude : 6.252416051898985,
-    //             // longitude: position.coords.longitude,
-    //             longitude:-75.56482851505281 ,
-    //             latitudeDelta: 0.003,
-    //             longitudeDelta: 0.003
-    //           }}
-    //           title={"HOLA 2"}
-    //           description={"descripcion 2"}
-    //         />
-
-    //         <Marker
-    //           coordinate={{
-    //             latitude : 6.252320066726161,
-    //             // longitude: position.coords.longitude,
-    //             longitude:-75.5643403530121 ,
-    //             latitudeDelta: 0.003,
-    //             longitudeDelta: 0.003
-    //           }}
-    //           title={"HOLA 3"}
-    //           description={"descripcion 3 "}
-    //         />
-    
-
-    //     </MapView>
-        
-    //   </View>
+     
     <View style={styles.container}>
     <MapView
+    mapPadding= {{
+        left: 0,
+        right: 0 ,
+        top: 0,
+        bottom: height /2,
+      }}
+      provider={PROVIDER_GOOGLE}
       ref={map => this.map = map}
+      showsMyLocationButton = {true}
+      showsUserLocation={true}
       initialRegion={this.state.mapRegion}
       style={styles.container}
+      style={{flex: 1, marginBottom: this.state.marginBottom}}
+    onMapReady={this._onMapReady}
     >
-      {this.state.markers.map((marker, index) => {
-        return (
-          <MapView.Marker key={index} coordinate={marker.coordinate}>
-            <Animated.View style={[styles.markerWrap]}>
-              <Animated.View style={[styles.ring]} />
-              <View style={styles.marker} />
-            </Animated.View>
-          </MapView.Marker>
-        );
-      })}
+       {this.state.markers.map((marker, index) => {
+            const scaleStyle = {
+              transform: [
+                {
+                  scale: interpolations[index].scale,
+                },
+              ],
+            };
+            const opacityStyle = {
+              opacity: interpolations[index].opacity,
+            };
+            return (
+              <MapView.Marker key={index} coordinate={marker.coordinate}>
+                <Animated.View style={[styles.markerWrap, opacityStyle]}>
+                  <Animated.View style={[styles.ring, scaleStyle]} />
+                  <View style={styles.marker} />
+                </Animated.View>
+              </MapView.Marker>
+            );
+          })}
+
+
     </MapView>
     <Animated.ScrollView
       horizontal
@@ -274,7 +313,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "rgba(130,4,150, 0.9)",
-  },
+  }, 
   ring: {
     width: 24,
     height: 24,
@@ -285,3 +324,4 @@ const styles = StyleSheet.create({
     borderColor: "rgba(130,4,150, 0.5)",
   },
 });
+

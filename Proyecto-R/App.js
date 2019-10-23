@@ -7,9 +7,13 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 
-import login from './src/pages/login';
-import singup from './src/pages/singup';   // imports para hacer la navegacion entre pantallas.
-import map from './src/pages/map';
+import login from './src/view/pages/login';
+import singup from './src/view/pages/singup'; 
+import singup2 from './src/view/pages/singup2';   // imports para hacer la navegacion entre pantallas.
+import map from './src/view/pages/map';
+import olvCont from './src/view/pages/olvCont';
+import changePass from './src/view/pages/changePass';
+import getCode from './src/view/pages/getCode';
 
 class NavigationDrawerStructure extends Component {  // Para poder mostar el menu deslizable
    
@@ -19,9 +23,7 @@ class NavigationDrawerStructure extends Component {  // Para poder mostar el men
 
   
   render() {
-    
     return (
-
       <View >
         <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
         <Icon name="bars" color='black' size={30} ></Icon> 
@@ -111,7 +113,7 @@ const CustomDrawerContentComponent = props => (
     >
       <View  style ={ { height : 150  }}>
   <Image
-  source= {require ('./src/Images/Logo.png')}
+ // source= {require ('./src/Images/Logo.png')}
   />
     </View>      
       <DrawerNavigatorItems {...props} />
@@ -145,12 +147,39 @@ const StackLogIn= createStackNavigator({
 const StackSingUp= createStackNavigator({
   varSingUp: {
     screen: singup
-    }
+    },varSingUp2: {
+      screen: singup2
+      },
   },
 
   {initialRouteName:'varSingUp'}
 );
 
+const StackOlvPass= createStackNavigator({
+  varOlvCont: {
+    screen: olvCont
+    
+  },
+    varGetCode: {
+      screen: getCode
+      }
+    ,
+    
+      varChangePass: {
+        screen: changePass
+        },
+      },
+  
+
+  {initialRouteName:'varOlvCont'}
+);
+
+
+class Hidden extends React.Component {
+  render(){
+    return null;
+  }
+}
 
 
 
@@ -199,6 +228,14 @@ const DrawerNavigator = createDrawerNavigator({ // aqui van las opciones del men
    drawerLabel: 'Mapa',
    drawerIcon: <Icon name="home" size={20} color="black" />,
    }
+},
+
+OlvCont: {
+  screen: StackOlvPass,
+  navigationOptions: {
+  drawerLabel: <Hidden/>,
+  header: null,
+  }
 },
 
 //aqui van mas opciones para el menu deslizable
