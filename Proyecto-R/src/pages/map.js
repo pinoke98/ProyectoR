@@ -11,12 +11,12 @@ import {Marker} from 'react-native-maps';
 export const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-    });
+    }); 
   };
   
   const Images = [
     { image: require("../Images/mountains.jpg")},
-    { image: require("../Images/music.jpg") },
+    { image: require('../Images/music.jpg') },
     { image: require('../Images/wolf.jpg' )},
   ]
 
@@ -56,7 +56,7 @@ export default class Map extends Component{
               },
               title: "music",
               description: "OMG !!",
-              image: Images[1],
+              image: Images[1].image,
             },
             {
               coordinate: {
@@ -65,7 +65,7 @@ export default class Map extends Component{
               },
               title: "Wolf",
               description: "Magestic",
-              image: Images[2],
+              image: Images[2].image,
             },
           ]
       };
