@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { TextInput, Text, Dimensions,View, 
+import { TextInput, Text, Dimensions,View,
     TouchableOpacity, ActivityIndicator,
  Alert ,ScrollView,StyleSheet,
  Image,KeyboardAvoidingView,AppRegistry,
  Animated} from "react-native";
+ import Constants from 'expo-constants';
 
 import MapView from 'react-native-maps';
 import {Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -85,6 +86,7 @@ export default class Map extends Component{
       componentWillMount() {
         this.index = 0;
         this.animation = new Animated.Value(0);
+        setTimeout(()=>this.setState({statusBarHeight: Constants.statusBarHeight}),500);
       }
       
     componentDidMount() {
@@ -161,7 +163,7 @@ export default class Map extends Component{
           });
         return(
      
-    <View style={styles.container}>
+    <View style={{flex: 1,paddingTop: this.state.statusBarHeight}} >
     <MapView
     mapPadding= {{
         left: 0,
@@ -245,19 +247,6 @@ export default class Map extends Component{
     }
 }
 
-const styles1 = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    mapStyle: {
-      width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height,
-    },
-  });
-
 
 const styles = StyleSheet.create({
   container: {
@@ -325,3 +314,4 @@ const styles = StyleSheet.create({
   },
 });
 
+AppRegistry.registerComponent("mapfocus", () => screens);

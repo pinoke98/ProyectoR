@@ -147,9 +147,10 @@ const StackLogIn= createStackNavigator({
 const StackSingUp= createStackNavigator({
   varSingUp: {
     screen: singup
-    },varSingUp2: {
+    },
+    varSingUp2: {
       screen: singup2
-      },
+      }
   },
 
   {initialRouteName:'varSingUp'}

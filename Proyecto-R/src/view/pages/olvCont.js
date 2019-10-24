@@ -8,12 +8,13 @@ export default class olvCont extends Component{
         super(props); 
         this.state ={ 
           correo:'',
-          enlace:'192.168.1.100',
+          enlace:global.enlace,
          estadoingresar:'' // para mostrar mensaje de error 
         }
        }
 
        enviarcorreo(){
+           if (this.state.correo!=""){
            global.correo=this.state.correo;
         fetch(`http://${this.state.enlace}:3307/enviarcorreo/${this.state.correo}`)  
         .then((response) => response.json())
@@ -25,10 +26,11 @@ export default class olvCont extends Component{
 
           if (this.state.dataSource==-1){
             this.setState({
-                estadoingresar:"N existe el correo electronico"
+                estadoingresar:"That email is not on use."
               })
           } else {
             this.setState({correo:''});
+            this.setState({mensaje:''});
             this.props.navigation.navigate('varGetCode');
           }
                
@@ -41,11 +43,11 @@ export default class olvCont extends Component{
        });
 
 
-        
+    }
        }
     render(){
         return(
-            <View style={styles.container}>
+            <View style={styles1.container}>
                 <View style={styles.logoContainer}>
                     <Image
                     style={styles.logo}
@@ -53,7 +55,7 @@ export default class olvCont extends Component{
                     />
                 </View>
                 <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
-                    <View style={styles1.con}>
+                    <View style={styles1.container}>
                         <StatusBar
                         barStyle="dark-content"
                         />
@@ -65,25 +67,59 @@ export default class olvCont extends Component{
                         returnKeyType="next"
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        value={this.state.correo}
                         autoCorrect={false}
                         onChangeText={(text) => this.setState({correo:text})}
                         style={styles1.input}
                         />
-                        <TouchableOpacity 
+                       
+                        <View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
                             this.enviarcorreo();
-                          
                         } }
                         > 
                             <Text style={styles1.ButtonText}>Send Code</Text>
                         </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
+
+
+
+
+
                     </View>
                 </KeyboardAvoidingView>
             </View>
         );
     }
 }
+
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
 
 const styles = StyleSheet.create({
     container:{
@@ -126,7 +162,8 @@ const styles1=StyleSheet.create({
     ButtonText:{
         textAlign:"center",
         color:"#FFFFFF",
-        fontWeight:'800'
+        fontWeight:'800',
+         padding:20
     },
     signupButton:{
         marginTop:5,

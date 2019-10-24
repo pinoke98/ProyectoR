@@ -17,7 +17,7 @@ export default class Singup extends Component{
             contraseña2:'',
             genero:'',
             ubicacion:'',
-            enlace:'192.168.1.100',
+            enlace:global.enlace,
             pickerSelecton:"Default",
             mensaje:""
         }
@@ -34,7 +34,7 @@ export default class Singup extends Component{
         this.state.contraseña1==""|| this.state.contraseña2==""|| this.state.genero==""||
          this.state.ubicacion==""){
             this.setState({mensaje:"There are still empty fields..."});
-            console.warn (this.state); 
+
         } else {
            
             fetch(`http://${this.state.enlace}:3307/nuevousuario`, {
@@ -52,9 +52,27 @@ export default class Singup extends Component{
                     genero:this.state.genero,
                     ubicacion:this.state.ubicacion
                 }),
-              });
+              })
+              .then((response) => response.json())
+     .then((responseJson) => {
+       this.setState({
+         isLoading: false,
+         dataSource: responseJson
+       });
+       // aqui ocurre la verificación 
+       if (this.state.dataSource==-1){ // quiere decir que almenos encontro un registro con usuario o correo repetido
+      this.setState({mensaje:"This username or email are already on use."});
+     } else {
+        this.props.navigation.navigate('varSingUp2');
+     }
+  }
+  
+     )
+     .catch((error) =>{
+       console.error(error);
+    });
               
-              this.props.navigation.navigate('varSingUp2');
+              
 
              }
 
@@ -63,14 +81,14 @@ export default class Singup extends Component{
     render(){
         return(
             <ScrollView>
-            <View style={styles.container}>
-                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset="150">
+            <View >
+                <KeyboardAvoidingView behavior="padding" >
                     <View style={styles.logoContainer}>
                     <Image style={styles.logo} 
                    source={require("../../Images/Logo.png")}
                      />
                     </View>
-                    <ScrollView>
+                    
                         <View style={styles.form}>
                             
                                 
@@ -144,11 +162,13 @@ export default class Singup extends Component{
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({genero: itemValue})
                                     }>
-                                        
+                                    <Picker.Item label="" value=""/>
                                     <Picker.Item label="Hombre" value="H" />
                                     <Picker.Item label="Mujer" value="M" />
                                     <Picker.Item label="Otro" value="O" />
                                     </Picker>  
+
+
 
                                     <Picker 
                                     mode="dropdown"
@@ -157,6 +177,7 @@ export default class Singup extends Component{
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({ubicacion: itemValue})
                                     }>
+                                    <Picker.Item label="" value=""/>
                                     <Picker.Item label="Colombia" value="Col"/>
                                     <Picker.Item label="Portugal" value="Por"/>
                                     <Picker.Item label="Puerto Rico" value="PR"/>
@@ -165,23 +186,52 @@ export default class Singup extends Component{
 
                                     <Text>{this.state.mensaje}</Text>
 
+                                    <View style={styles1.container}>
+                                    <View style={styles1.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles1.buttonContainer}>
                                     <TouchableOpacity
                                     style={styles.Button}
                                     onPress={ () =>{
                                         this.finalizarresgistro ();
                                     }
                                     }>                       
-                                        <Text style={styles.ButtonText}>Finalizar registro</Text>                         
-                                    </TouchableOpacity>                        
-                            
+                                        <Text style={styles.ButtonText}>  Finish SignUp  </Text>                         
+                                    </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
                         </View>
-                    </ScrollView>
+                    
                 </KeyboardAvoidingView>
             </View>
             </ScrollView>
         )
     }
 }
+
+
+
+const styles1= StyleSheet.create({
+container: {
+flex: 1,
+flexDirection: 'row',
+alignItems: 'center',
+justifyContent: 'center',
+},
+buttonContainer: {
+flex: 1,
+}
+});
 
 const styles=StyleSheet.create({
     container:{
@@ -213,7 +263,7 @@ const styles=StyleSheet.create({
         backgroundColor:"rgba(189, 195, 199,0.4)",
         borderRadius:16,
         marginBottom:15,
-        color:"#FFF",
+        color:"#000",
         paddingHorizontal:10,
         
     },

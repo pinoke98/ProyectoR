@@ -7,7 +7,7 @@ export default class SignUp2 extends Component{
              super(props); 
              this.state ={ 
                codigo:'',
-               enlace:'192.168.1.100',
+               enlace:global.enlace,
               estadoingresar:'' // para mostrar mensaje de error 
              }
             }
@@ -30,10 +30,10 @@ export default class SignUp2 extends Component{
 
        } else {
            
-         this.setState({estadoingresar:'Upps!! Código no coincide.'});
+         this.setState({estadoingresar:'Upps!! That´s not the same code.'});
        }
      } else {
-       this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+       this.setState({estadoingresar:'Upps!! Something it´s not right.'});
      }
      }
   
@@ -46,16 +46,17 @@ export default class SignUp2 extends Component{
 
     render(){
         return(
-            
+           
             <View style={styles.container}>
+                 <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
                 <View style={styles.logoContainer}>
                     <Image
                     style={styles.logo}
                     source={require("../../Images/Logo.png")}
                     />
                 </View>
-                <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
-                    <View style={styles1.con}>
+                
+                    <View style={styles1.container}>
                         <StatusBar
                         barStyle="dark-content"
                         />
@@ -70,8 +71,24 @@ export default class SignUp2 extends Component{
                         style={styles1.input}
                         />
 
-                        <Text>{this.state.estadoingresar}</Text>
-                        <TouchableOpacity 
+                        
+
+
+{/* --- */}
+<View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varSingUp');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
                            this.verificar();
@@ -79,21 +96,40 @@ export default class SignUp2 extends Component{
                         > 
                             <Text style={styles1.ButtonText}>Send Code</Text>
                         </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
+
+{/* ---- */}
+
                     </View>
-                </KeyboardAvoidingView>
+                    <Text>{this.state.estadoingresar}</Text>
+                    </KeyboardAvoidingView>
             </View>
+             
         );
     
 }
 }
 
-
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
 
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:"#FFFFFF"
+        backgroundColor:"#FFFFFF",
+        padding:20
     },
     logoContainer:{
         justifyContent:"center",

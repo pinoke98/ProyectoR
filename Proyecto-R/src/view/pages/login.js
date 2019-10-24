@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
+
+global.enlace ="192.168.1.102";
+
 export default class Login extends Component{
  
     constructor(props){
@@ -9,13 +12,14 @@ export default class Login extends Component{
              this.state ={ 
                usuario:'',
                contraseña:'',
-               enlace:'192.168.1.100',
+               enlace:global.enlace,
               estadoingresar:'' // para mostrar mensaje de error 
              }
             }
 
 
              verificar (){ 
+                 if (this.state.usuario != "" ||this.state.contraseña != "" ){
    fetch(`http://${this.state.enlace}:3307/obtenerusuario/${this.state.usuario}`)  
      .then((response) => response.json())
      .then((responseJson) => {
@@ -36,11 +40,11 @@ export default class Login extends Component{
 
        } else {
            
-         this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+         this.setState({estadoingresar:'Upps!! Something it´s not right.'});
        }
      } else {
     
-       this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+       this.setState({estadoingresar:'Upps!! Something it´s not right.'});
      }
      }
   
@@ -50,6 +54,7 @@ export default class Login extends Component{
        console.error(error);
     });
              }
+            }
 
     render(){
         return(
@@ -68,10 +73,12 @@ export default class Login extends Component{
                 barStyle="dark-content"
                 />
 
+
 <Text style={styles1.text}> {this.state.estadoingresar}</Text>
 
                 <TextInput 
-                placeholder="Username or Email"
+                value ={this.state.usuario}
+                placeholder="Username"
                 placeholderTextColor="rgba(87, 96, 111,1.0)"
                 returnKeyType="next"
                 keyboardType="email-address"
@@ -81,6 +88,7 @@ export default class Login extends Component{
                 onChangeText={(text) => this.setState({usuario:text})}
                 />
                 <TextInput 
+                value ={this.state.contraseña}
                 placeholder="Password"
                 placeholderTextColor="rgba(87, 96, 111,1.0)"
                 secureTextEntry

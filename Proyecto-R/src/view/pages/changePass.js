@@ -8,7 +8,7 @@ export default class changePass extends Component{
         this.state ={ 
           contraseña1:'',
           contraseña2:'',
-          enlace:'192.168.1.100',
+          enlace:global.enlace,
          estadoingresar:'' // para mostrar mensaje de error 
         }
        }
@@ -16,8 +16,11 @@ export default class changePass extends Component{
        verificar (){
 
         if(this.state.contraseña1 != this.state.contraseña2){
-            this.setState({estadoingresar:"Upps"});
-        } else {
+            this.setState({estadoingresar:"Upps! That´s not the same password..."});
+        } else if(this.state.contraseña1=="" || this.state.contraseña2==""){
+            this.setState({estadoingresar:"Upps! Something bas is happening, check the passwords"});
+        }
+     else {
             fetch(`http://${this.state.enlace}:3307/cambiarcontrasena/${global.correo}/${this.state.contraseña1}`) ;
             this.props.navigation.navigate('varMap');// navegacion al home de la app
        }
@@ -55,7 +58,22 @@ export default class changePass extends Component{
                         style={styles1.input}
                         onChangeText={(text) => this.setState({contraseña2:text})}
                         />
-                        <TouchableOpacity 
+
+                       
+                        <View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
                            this.verificar();
@@ -63,6 +81,9 @@ export default class changePass extends Component{
                         > 
                             <Text style={styles1.ButtonText}>Confirm Password</Text>
                         </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -70,10 +91,25 @@ export default class changePass extends Component{
     }
 }
 
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
+
+    
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:"#FFFFFF"
+        backgroundColor:"#FFFFFF",
+        padding:20
     },
     logoContainer:{
         justifyContent:"center",

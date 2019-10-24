@@ -8,7 +8,7 @@ export default class olvCont extends Component{
         super(props); 
         this.state ={ 
           codigo:'',
-          enlace:'192.168.1.100',
+          enlace:global.enlace,
          estadoingresar:'' // para mostrar mensaje de error 
         }
        }
@@ -31,10 +31,10 @@ this.props.navigation.navigate('varChangePass');// navegacion al home de la app
 
   } else {
       
-    this.setState({estadoingresar:'Upps!! Código no coincide.'});
+    this.setState({estadoingresar:'Upps!! That´s not the code we sent'});
   }
 } else {
-  this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+  this.setState({estadoingresar:'Upps!! Something is bad.. '});
 }
 }
 
@@ -47,13 +47,14 @@ this.props.navigation.navigate('varChangePass');// navegacion al home de la app
     render(){
         return(
             <View style={styles.container}>
+                <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
                 <View style={styles.logoContainer}>
                     <Image
                     style={styles.logo}
                     source={require("../../Images/Logo.png")}
                     />
                 </View>
-                <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
+                
                     <View style={styles1.con}>
                         <StatusBar
                         barStyle="dark-content"
@@ -61,20 +62,42 @@ this.props.navigation.navigate('varChangePass');// navegacion al home de la app
                         <Text>{this.state.estadoingresar }</Text>
                         <TextInput 
                         placeholder="Code"
+                        value ={this.state.codigo}
                         placeholderTextColor="rgba(87, 96, 111,1.0)"
                         returnKeyType="join"
                         keyboardType= "number-pad"
                         onChangeText={(text) => this.setState({codigo:text})}
                         style={styles1.input}
                         />
-                        <TouchableOpacity 
+
+
+
+                        <View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varOlvCont');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
                             this.verificar();  
                         } }
                         > 
                             <Text style={styles1.ButtonText}>Confirm code</Text>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
+
+
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -82,9 +105,22 @@ this.props.navigation.navigate('varChangePass');// navegacion al home de la app
     }
 }
 
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
+        padding:20,
         backgroundColor:"#FFFFFF"
     },
     logoContainer:{

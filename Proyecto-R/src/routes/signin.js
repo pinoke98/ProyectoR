@@ -14,7 +14,7 @@ var transporter = nodemailer.createTransport({
 
 var mailOptions = {
   from: 'proyectorcol1@gmail.com',
-  to: 'jpmedina2000@hotmail.com',
+  to: '',
   subject: 'HOLA ',
   text: 'prueba asasdasadasdad'
 };
@@ -32,34 +32,49 @@ router.post('/nuevousuario', function(req, res){
     var date = new Date().getDate(); //devuelve de 1-31
     var codigo = Math.floor((Math.random() * 9999) + 1000);;
     mailOptions.text = `Tu código es ${codigo}` ;
+    mailOptions.to = `${email}` ;
 
     con.query(`
-    insert into usuarios (Usuario,Contraseña,Nombre, Apellido, Email, Genero, Ubicacion) 
-    values ("${iusuario}","${contraseña}","${nombre}","${apellido}","${email}","${genero}","${ubicacion}")
+    select * from usuarios  where Usuario ="${iusuario}"  or Email= "${email}"
     `, function(error, rows, fields){
         if(error) console.log(error ); 
           else{ 
-            console.log("Se Creó un nuevo usuario");
+            if (rows.length!=0){ // llego lleno,  encontro usuario o correo repetido
+              res.send("-1");
+            } else {
+              con.query(`
+              insert into usuarios (Usuario,Contraseña,Nombre, Apellido, Email, Genero, Ubicacion) 
+              values ("${iusuario}","${contraseña}","${nombre}","${apellido}","${email}","${genero}","${ubicacion}")
+              `, function(error, rows, fields){
+                  if(error) console.log(error ); 
+                    else{ 
+                      console.log("Se Creó un nuevo usuario");
+                    }
+              });
+          
+              con.query(`
+              insert into codigoactivacion (Usuario, Email, Codigo, Fecha) 
+              values ("${iusuario}","${email}","${codigo}","${date}")
+              `, function(error, rows, fields){
+                  if(error) console.log(error ); 
+                    else{ 
+                      console.log("Se Creó un nuevo codigo de activacion ");
+                    }
+              });
+               console.log(mailOptions.to);
+               console.log(mailOptions.text);
+              transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
+                res.send("0");
+            }
           }
     });
 
-    con.query(`
-    insert into codigoactivacion (Usuario, Email, Codigo, Fecha) 
-    values ("${iusuario}","${email}","${codigo}","${date}")
-    `, function(error, rows, fields){
-        if(error) console.log(error ); 
-          else{ 
-            console.log("Se Creó un nuevo codigo de activacion ");
-          }
-    });
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
     
   });
 
@@ -75,6 +90,7 @@ router.post('/nuevousuario', function(req, res){
               console.log(usuario);
               console.log(rows);
               res.send(rows);
+
           }
     });
     
