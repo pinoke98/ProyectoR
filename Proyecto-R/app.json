@@ -25,9 +25,6 @@
     ],
     "android": {
       "package": "com.company",
-      "googleMaps": {
-        "apiKey": "<android maps key>"
-    }
     }
     ,
     "ios": {
