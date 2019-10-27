@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 import login from './src/view/pages/login';
+
 import singup from './src/view/pages/singup'; 
 import singup2 from './src/view/pages/singup2';   // imports para hacer la navegacion entre pantallas.
 import map from './src/view/pages/map';

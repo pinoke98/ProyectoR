@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
 
-global.enlace ="192.168.32.1";
+global.enlace ="192.168.1.102";
 
 export default class Login extends Component{
  

@@ -180,3 +180,4 @@ const styles1=StyleSheet.create({
         fontWeight:"800"
     }
 });
+
