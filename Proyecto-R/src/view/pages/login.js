@@ -1,22 +1,26 @@
 import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
+
+global.enlace ="192.168.32.1";
+
 export default class Login extends Component{
  
     constructor(props){
              super(props); 
            global.usuario = ''; // en esta variable ira el usuario actual en una sesion
-             global.usuarioadm = ''; // en esta variable ira el usuario actual en una sesion
              this.state ={ 
                usuario:'',
                contraseña:'',
-               enlace:'192.168.56.1',
+               enlace:global.enlace,
               estadoingresar:'' // para mostrar mensaje de error 
              }
             }
 
+
              verificar (){ 
-   fetch(`http://${this.state.enlace}:/obtenerusuario/${this.state.usuario}`)  
+                 if (this.state.usuario != "" ||this.state.contraseña != "" ){
+   fetch(`http://${this.state.enlace}:3307/obtenerusuario/${this.state.usuario}`)  
      .then((response) => response.json())
      .then((responseJson) => {
        this.setState({
@@ -25,24 +29,22 @@ export default class Login extends Component{
        });
        // aqui ocurre la verificación 
        if (this.state.dataSource.length != 0 ){ // quiere decir que almenos encontro un registro
-       if ( this.state.usuario==this.state.dataSource[0].Usuario && this.state.contraseña==this.state.dataSource[0].Contra){
+       if ( this.state.usuario==this.state.dataSource[0].Usuario && this.state.contraseña==this.state.dataSource[0].Contraseña){
          // si los datos son correctos 
-  
-   
+
    global.usuario=this.state.usuario;
-   global.usuarioadm=this.state.dataSource[0].UsuarioADM;
    this.setState({contraseña:''});
    this.setState({usuario:''});
    this.setState({estadoingresar:''});
    this.props.navigation.navigate('varMap');// navegacion al home de la app
 
        } else {
-           console.warn('malo');
-         this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+           
+         this.setState({estadoingresar:'Upps!! Something it´s not right.'});
        }
      } else {
-        console.warn('malo');
-       this.setState({estadoingresar:'Upps!! Algo no está bien.'});
+    
+       this.setState({estadoingresar:'Upps!! Something it´s not right.'});
      }
      }
   
@@ -52,6 +54,7 @@ export default class Login extends Component{
        console.error(error);
     });
              }
+            }
 
     render(){
         return(
@@ -69,8 +72,13 @@ export default class Login extends Component{
                 <StatusBar
                 barStyle="dark-content"
                 />
+
+
+<Text style={styles1.text}> {this.state.estadoingresar}</Text>
+
                 <TextInput 
-                placeholder="Username or Email"
+                value ={this.state.usuario}
+                placeholder="Username"
                 placeholderTextColor="rgba(87, 96, 111,1.0)"
                 returnKeyType="next"
                 keyboardType="email-address"
@@ -80,6 +88,7 @@ export default class Login extends Component{
                 onChangeText={(text) => this.setState({usuario:text})}
                 />
                 <TextInput 
+                value ={this.state.contraseña}
                 placeholder="Password"
                 placeholderTextColor="rgba(87, 96, 111,1.0)"
                 secureTextEntry
@@ -91,24 +100,29 @@ export default class Login extends Component{
                 <TouchableOpacity 
                 style={styles1.Button} 
                 onPress = {() => { 
-                    
-                    console.warn (this.state.enlace);
-                    console.warn (this.state.usuario);
                     this.verificar();
                  } }
                 > 
                     <Text style={styles1.ButtonText}>LOGIN</Text>
                 </TouchableOpacity>
 
-                <Text> {this.state.estadoingresar}</Text>
-
+                
 
                 <View style={styles1.signupButton}>
                     <Text style={styles1.text}>You don´t have an account?</Text>
                     <TouchableOpacity onPress = {() => {
                       this.props.navigation.navigate('varSingUp');
                       } }>
-                        <Text style={styles1.textsignUp}> SignUp</Text>
+                        <Text style={styles1.textsignUp}> SignUp!</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles1.signupButton}>
+                    <Text style={styles1.text}>Forgot Password?</Text>
+                    <TouchableOpacity onPress = {() => {
+                      this.props.navigation.navigate('varOlvCont');
+                      } }>
+                        <Text style={styles1.textsignUp}> Recorver it here!</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -156,7 +170,7 @@ const styles1=StyleSheet.create({
         backgroundColor:"rgba(189, 195, 199,0.4)",
         borderRadius:16,
         marginBottom:15,
-        color:"#FFF",
+        color:"#000",
         paddingHorizontal:10
     },
     Button:{
@@ -186,109 +200,4 @@ const styles1=StyleSheet.create({
         fontWeight:"800"
     }
 });
-
-
-
-//  export default class LogIn extends Component { 
-
-//   constructor(props){
-//     super(props); 
-//     global.usuario = ''; // en esta variable ira el usuario actual en una sesion
-//     global.usuarioadm = ''; // en esta variable ira el usuario actual en una sesion
-//     this.state ={ 
-//       usuario:'',
-//       contraseña:'',
-//       enlace:'192.168.0.105',
-//       estadoingresar:'' // para mostrar mensaje de error 
-      
-//   }
-// }
-
-// verificar (){ 
-//   fetch(`http://${this.state.enlace}:4646/obtenerusuario/${this.state.usuario}`)  
-//     .then((response) => response.json())
-//     .then((responseJson) => {
-//       this.setState({
-//         isLoading: false,
-//         dataSource: responseJson
-//       });
-//       // aqui ocurre la verificación 
-//       if (this.state.dataSource.length != 0 ){ // quiere decir que almenos encontro un registro
-//       if ( this.state.usuario==this.state.dataSource[0].Usuario && this.state.contraseña==this.state.dataSource[0].Contra){
-//         // si los datos son correctos 
-  
-  
-//   global.usuario=this.state.usuario;
-//   global.usuarioadm=this.state.dataSource[0].UsuarioADM;
-//   this.setState({contraseña:''});
-//   this.setState({usuario:''});
-//   this.setState({estadoingresar:''});
-//   this.props.navigation.navigate('varHome');// navegacion al home de la app
-
-//       } else {
-//         this.setState({estadoingresar:'Upps!! Algo no está bien.'});
-//       }
-//     } else {
-//       this.setState({estadoingresar:'Upps!! Algo no está bien.'});
-//     }
-//     }
-  
-  
-//     )
-//     .catch((error) =>{
-//       console.error(error);
-//     });
-
-
-
-  
-// }
-
-//   render() {
-
-//       return(
-//       <ScrollView >
-//         <View style={{ flex: 1 }}>
-          
-//         <View style={StyleSheet.titles}>
-//           <Text style={{textAlign: 'center',}} > INICIAR SESIÓN </Text>
-//         </View>
-//         <Text></Text>
-//         <View style={StyleSheet.styleNormal}>
-//        <TextInput
-//                autoCorrect={ false } 
-//                style={StyleSheet.fields}
-//                placeholder="Nombre de Usuario"
-//                value={String(this.state.usuario)}
-//                returnKeyLabel = {"next"}
-//               onChangeText={(text) => this.setState({usuario: text})}
-//             />
-//             <Text></Text>
-//             <TextInput
-//                 autoCorrect={ false } 
-//                 style={StyleSheet.fields}
-//                 placeholder="Contraseña"
-//                 returnKeyLabel = {"next"}
-//                 value={String(this.state.contraseña)}
-//                 onChangeText={(text) => this.setState({contraseña:text})}
-//                secureTextEntry={true}
-//             />
-// <Text></Text>
-//              <TouchableOpacity  onPress={() => {
-//             this.verificar();
-//           }} style={StyleSheet.button}>
-//              <Icon name="check" size={20} color="#FFFFFF" />
-//                <Text style={{color: '#FFFFFF', fontSize: 15, fontWeight: 'bold'}}>  Entrar </Text>
-//              </TouchableOpacity>
-
-//              <Text >{this.state.estadoingresar} </Text>
-//              </View>
-
-//              </View>
-
-//              </ScrollView>
-//     );
-//   }
-// }
-
 

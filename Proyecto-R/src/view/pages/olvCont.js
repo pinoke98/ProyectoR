@@ -1,13 +1,53 @@
 import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
-const nodemailer = require('nodemailer')
+
 
 export default class olvCont extends Component{
- 
+    constructor(props){
+        super(props); 
+        this.state ={ 
+          correo:'',
+          enlace:global.enlace,
+         estadoingresar:'' // para mostrar mensaje de error 
+        }
+       }
+
+       enviarcorreo(){
+           if (this.state.correo!=""){
+           global.correo=this.state.correo;
+        fetch(`http://${this.state.enlace}:3307/enviarcorreo/${this.state.correo}`)  
+        .then((response) => response.json())
+        .then((responseJson) => {
+          this.setState({
+            isLoading: false,
+            dataSource: responseJson
+          });
+
+          if (this.state.dataSource==-1){
+            this.setState({
+                estadoingresar:"That email is not on use."
+              })
+          } else {
+            this.setState({correo:''});
+            this.setState({mensaje:''});
+            this.props.navigation.navigate('varGetCode');
+          }
+               
+        }
+     
+     
+        )
+        .catch((error) =>{
+          console.error(error);
+       });
+
+
+    }
+       }
     render(){
         return(
-            <View style={styles.container}>
+            <View style={styles1.container}>
                 <View style={styles.logoContainer}>
                     <Image
                     style={styles.logo}
@@ -15,41 +55,71 @@ export default class olvCont extends Component{
                     />
                 </View>
                 <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
-                    <View style={styles1.con}>
+                    <View style={styles1.container}>
                         <StatusBar
                         barStyle="dark-content"
                         />
+
+                        <Text>{this.state.estadoingresar}</Text>
                         <TextInput 
                         placeholder="Email"
                         placeholderTextColor="rgba(87, 96, 111,1.0)"
                         returnKeyType="next"
-                        onSubmitEditing={() => this.passwordInput.focus()}
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        value={this.state.correo}
                         autoCorrect={false}
+                        onChangeText={(text) => this.setState({correo:text})}
                         style={styles1.input}
                         />
-                        <TouchableOpacity 
+                       
+                        <View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
-                            this.props.navigation.navigate('varCod');  
-                            transport.sendMail(message, function(err, info) {
-                                if (err) {
-                                  console.log(err)
-                                } else {
-                                  console.log(info);
-                                }
-                            });
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                            this.enviarcorreo();
                         } }
                         > 
                             <Text style={styles1.ButtonText}>Send Code</Text>
                         </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
+
+
+
+
+
                     </View>
                 </KeyboardAvoidingView>
             </View>
         );
     }
 }
+
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
 
 const styles = StyleSheet.create({
     container:{
@@ -92,7 +162,8 @@ const styles1=StyleSheet.create({
     ButtonText:{
         textAlign:"center",
         color:"#FFFFFF",
-        fontWeight:'800'
+        fontWeight:'800',
+         padding:20
     },
     signupButton:{
         marginTop:5,
@@ -109,21 +180,4 @@ const styles1=StyleSheet.create({
         fontWeight:"800"
     }
 });
-// Envio de email
-
-let transport = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 2525,
-    auth: {
-       user: '79390913bdc00c',
-       pass: '424d286debffbc'
-    }
-});
-
-const message = {
-    from: 'no.reply@proyector.com', // Sender address
-    to: 'jorge_mario98@hotmail.com',         // List of recipients
-    subject: 'Design Your Model S | Tesla', // Subject line
-    text: 'Have the most fun you can in a car. Get your Tesla today!' // Plain text body
-};
 

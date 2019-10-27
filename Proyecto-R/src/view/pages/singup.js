@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextInput, Text, View, TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView,Picker} from "react-native";
+import { Scrollview,TextInput, Text, View, TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView,Picker} from "react-native";
 
 
  
@@ -7,11 +7,9 @@ import { TextInput, Text, View, TouchableOpacity, ActivityIndicator, Alert ,Scro
 export default class Singup extends Component{
     constructor(props){
         super(props);
-        global.usuario = '';
 
         this.state ={
-            usuario:'',
-            contraseña:'',
+            iusuario:'',
             nombre:'',
             apellido:'',
             email:'',
@@ -19,20 +17,78 @@ export default class Singup extends Component{
             contraseña2:'',
             genero:'',
             ubicacion:'',
-            enlace:'192.168.56.1',
-            pickerSelection:"Default"
+            enlace:global.enlace,
+            pickerSelecton:"Default",
+            mensaje:""
         }
+    }
+
+  
+    finalizarresgistro(){
+        global.usuario = this.state.iusuario;
+        
+        if (this.state.contraseña1 != this.state.contraseña2){
+            this.setState({mensaje:"That´s not the same password..."});
+        } else if (this.state.iusuario1=="" || 
+        this.state.nombre==""|| this.state.apellido==""|| this.state.email==""|| 
+        this.state.contraseña1==""|| this.state.contraseña2==""|| this.state.genero==""||
+         this.state.ubicacion==""){
+            this.setState({mensaje:"There are still empty fields..."});
+
+        } else {
+           
+            fetch(`http://${this.state.enlace}:3307/nuevousuario`, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    iusuario:this.state.iusuario,
+                    nombre:this.state.nombre,
+                    apellido:this.state.apellido,
+                    email:this.state.email,
+                    contraseña:this.state.contraseña1,
+                    genero:this.state.genero,
+                    ubicacion:this.state.ubicacion
+                }),
+              })
+              .then((response) => response.json())
+     .then((responseJson) => {
+       this.setState({
+         isLoading: false,
+         dataSource: responseJson
+       });
+       // aqui ocurre la verificación 
+       if (this.state.dataSource==-1){ // quiere decir que almenos encontro un registro con usuario o correo repetido
+      this.setState({mensaje:"This username or email are already on use."});
+     } else {
+        this.props.navigation.navigate('varSingUp2');
+     }
+  }
+  
+     )
+     .catch((error) =>{
+       console.error(error);
+    });
+              
+              
+
+             }
+
+
     }
     render(){
         return(
-            <View style={styles.container}>
-                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset="150">
+            <ScrollView>
+            <View >
+                <KeyboardAvoidingView behavior="padding" >
                     <View style={styles.logoContainer}>
                     <Image style={styles.logo} 
                    source={require("../../Images/Logo.png")}
                      />
                     </View>
-                    <ScrollView>
+                    
                         <View style={styles.form}>
                             
                                 
@@ -64,7 +120,7 @@ export default class Singup extends Component{
                                     returnKeyType="next"
                                     keyboardType="default"
                                     autoCompleteType="email"
-                                    onChangeText={(text)  => this.setState({usuario:text})}
+                                    onChangeText={(text)  => this.setState({iusuario:text})}
                                     />
                                     
                                     <TextInput
@@ -101,51 +157,81 @@ export default class Singup extends Component{
                                     />
                                     <Picker
                                     mode="dropdown"
-                                    selectedValue={this.state.pickerSelection}
+                                    selectedValue={this.state.genero}
                                     style={styles.input}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({pickerSelection: itemValue})
-                                    }>
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({genero: itemValue})
                                     }>
+                                    <Picker.Item label="" value=""/>
                                     <Picker.Item label="Hombre" value="H" />
                                     <Picker.Item label="Mujer" value="M" />
                                     <Picker.Item label="Otro" value="O" />
-                                    </Picker>    
+                                    </Picker>  
+
+
+
                                     <Picker 
                                     mode="dropdown"
-                                    selectedValue={this.state.pickerSelection}
+                                    selectedValue={this.state.ubicacion}
                                     style={styles.input}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({pickerSelection: itemValue})
-                                    }
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({ubicacion: itemValue})
                                     }>
-                                    >
-                                    <Picker.Item label="Colombia" Value="Col"/>
-                                    <Picker.Item label="Portugal" Value="Por"/>
-                                    <Picker.Item label="Puerto Rico" Value="PR"/>
+                                    <Picker.Item label="" value=""/>
+                                    <Picker.Item label="Colombia" value="Col"/>
+                                    <Picker.Item label="Portugal" value="Por"/>
+                                    <Picker.Item label="Puerto Rico" value="PR"/>
                                     
                                     </Picker>
 
+                                    <Text>{this.state.mensaje}</Text>
+
+                                    <View style={styles1.container}>
+                                    <View style={styles1.buttonContainer}>
+                                        <TouchableOpacity 
+                        style={styles.Button} 
+                        onPress = {() => { 
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles1.buttonContainer}>
                                     <TouchableOpacity
                                     style={styles.Button}
                                     onPress={ () =>{
-                                        this.props.navigation.navigate('varMap')
+                                        this.finalizarresgistro ();
                                     }
                                     }>                       
-                                        <Text style={styles.ButtonText}>Finalizar registro</Text>                         
-                                    </TouchableOpacity>                        
-                            
+                                        <Text style={styles.ButtonText}>  Finish SignUp  </Text>                         
+                                    </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
                         </View>
-                    </ScrollView>
+                    
                 </KeyboardAvoidingView>
             </View>
+            </ScrollView>
         )
     }
 }
+
+
+
+const styles1= StyleSheet.create({
+container: {
+flex: 1,
+flexDirection: 'row',
+alignItems: 'center',
+justifyContent: 'center',
+},
+buttonContainer: {
+flex: 1,
+}
+});
 
 const styles=StyleSheet.create({
     container:{
@@ -177,7 +263,7 @@ const styles=StyleSheet.create({
         backgroundColor:"rgba(189, 195, 199,0.4)",
         borderRadius:16,
         marginBottom:15,
-        color:"#FFF",
+        color:"#000",
         paddingHorizontal:10,
         
     },
@@ -208,4 +294,3 @@ const styles=StyleSheet.create({
         fontWeight:"800"
     }
 });
-

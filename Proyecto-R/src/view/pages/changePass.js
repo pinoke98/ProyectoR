@@ -2,6 +2,30 @@ import React, { Component } from "react";
 import { TextInput, Text, View, StatusBar,TouchableOpacity, ActivityIndicator, Alert ,ScrollView,StyleSheet,Image,KeyboardAvoidingView} from "react-native";
 
 export default class changePass extends Component{
+
+    constructor(props){
+        super(props); 
+        this.state ={ 
+          contraseña1:'',
+          contraseña2:'',
+          enlace:global.enlace,
+         estadoingresar:'' // para mostrar mensaje de error 
+        }
+       }
+
+       verificar (){
+
+        if(this.state.contraseña1 != this.state.contraseña2){
+            this.setState({estadoingresar:"Upps! That´s not the same password..."});
+        } else if(this.state.contraseña1=="" || this.state.contraseña2==""){
+            this.setState({estadoingresar:"Upps! Something bas is happening, check the passwords"});
+        }
+     else {
+            fetch(`http://${this.state.enlace}:3307/cambiarcontrasena/${global.correo}/${this.state.contraseña1}`) ;
+            this.props.navigation.navigate('varMap');// navegacion al home de la app
+       }
+    }
+
     render(){
         return(
             <View style={styles.container}>
@@ -16,11 +40,13 @@ export default class changePass extends Component{
                         <StatusBar
                         barStyle="dark-content"
                         />
+
+                        <Text>{this.state.estadoingresar}</Text>
                         <TextInput 
                         placeholder="Password"
                         placeholderTextColor="rgba(87, 96, 111,1.0)"
                         returnKeyType="next"
-                        
+                        onChangeText={(text) => this.setState({contraseña1:text})}
                         secureTextEntry
                         style={styles1.input}
                         />
@@ -30,16 +56,34 @@ export default class changePass extends Component{
                         secureTextEntry
                         returnKeyType="join"
                         style={styles1.input}
-                        ref={(input)=>this.passwordInput = input}
+                        onChangeText={(text) => this.setState({contraseña2:text})}
                         />
-                        <TouchableOpacity 
+
+                       
+                        <View style={styles2.container}>
+                                    <View style={styles2.buttonContainer}>
+                                        <TouchableOpacity 
                         style={styles1.Button} 
                         onPress = {() => { 
-                            this.props.navigation.navigate(' ');
+                            this.props.navigation.navigate('varLogIn');
+                        } }
+                        > 
+                            <Text style={styles1.ButtonText}>  Go back. </Text>
+                        </TouchableOpacity> 
+  
+                                </View>
+                                    <View style={styles2.buttonContainer}>
+                                    <TouchableOpacity 
+                        style={styles1.Button} 
+                        onPress = {() => { 
+                           this.verificar();
                         } }
                         > 
                             <Text style={styles1.ButtonText}>Confirm Password</Text>
                         </TouchableOpacity>
+                                        </View>
+                                                   
+                            </View>
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -47,10 +91,25 @@ export default class changePass extends Component{
     }
 }
 
+const styles2= StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    buttonContainer: {
+    flex: 1,
+    }
+    });
+
+    
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:"#FFFFFF"
+        backgroundColor:"#FFFFFF",
+        padding:20
     },
     logoContainer:{
         justifyContent:"center",

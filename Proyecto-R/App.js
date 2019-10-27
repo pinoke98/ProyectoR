@@ -8,7 +8,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 import login from './src/view/pages/login';
-import singup from './src/view/pages/singup';   // imports para hacer la navegacion entre pantallas.
+
+import singup from './src/view/pages/singup'; 
+import singup2 from './src/view/pages/singup2';   // imports para hacer la navegacion entre pantallas.
 import map from './src/view/pages/map';
 import olvCont from './src/view/pages/olvCont';
 import changePass from './src/view/pages/changePass';
@@ -146,7 +148,10 @@ const StackLogIn= createStackNavigator({
 const StackSingUp= createStackNavigator({
   varSingUp: {
     screen: singup
-    }
+    },
+    varSingUp2: {
+      screen: singup2
+      }
   },
 
   {initialRouteName:'varSingUp'}
